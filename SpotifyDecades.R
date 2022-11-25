@@ -8,8 +8,7 @@ library(spotifyr)
 library(tidyverse)
 
 # Authenticate
-my_token <- get_spotify_access_token(client_id = "f371607e9cc740139c359fd8a4f42f88", 
-                                     client_secret = "21333c7bb1a541cda82bf0eddf389e5d")
+my_token <- get_spotify_access_token()
 
 # Get a list of songs for each decade
 
