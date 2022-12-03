@@ -36,12 +36,16 @@ songs_long <- songs_long[songs_long$Measure!="instrumentalness",]
 mean_data <- songs_long %>% group_by(decade, Measure) %>%
   summarise(across(.cols = Score, .fns = mean))
 
+# Rename track duration 
+mean_data[mean_data$Measure=="track.duration_ms",]$Measure <- "track.duration"
+
 # Graph trend
-mean_data %>% ggplot(aes(x = decade, y = Score)) + facet_wrap(~Measure, scales = "free", nrow = 3) +
+mean_data %>%
+  ggplot(aes(x = decade, y = Score)) + facet_wrap(~Measure, scales = "free", nrow = 3) +
   geom_line(aes(group = 1, color = Measure)) + geom_point(alpha = .9, color = "black") + 
   labs(title = "Mean of Song Variables by Decade,\n1950-2020") + 
   theme(text = element_text(size = 14), axis.text.x = element_text( 
-                           size=10, angle=45))
+                           size=9.5, angle=45))
 
 # Distribution of loudness for each decade
 decades %>% mutate(decade = as.factor(decade)) %>% 
@@ -49,6 +53,14 @@ decades %>% mutate(decade = as.factor(decade)) %>%
   labs(title = "Distribution of Loudness Scores for Each Decade\n1950-2020", x = "Loudness (dB)", 
        y = "Number of Songs") + theme(text = element_text(size = 14), axis.text.x = element_text( 
                            size=10, angle=45))
+
+# Violin plot of loudness for each decade
+decades %>% mutate(decade = as.factor(decade)) %>% ggplot(aes(decade, loudness)) +
+  geom_violin(aes(group = decade, fill = decade)) +
+  geom_boxplot(aes(group = decade, fill = decade), outlier.colour = "red",
+               outlier.shape = 2, width=0.1) + labs(title = "Boxplot of Loudness for Popular Songs of Each Decade\n1950-2020",
+                                         x = "Decade", y = "Loudness Score") +
+  scale_fill_viridis(discrete = T, option = "magma") + theme(text = element_text(size = 14))
 
 ```
 Distributions and mean for each variable were visualized in a ggplot facet grid.  Based on the EDA, one of the clearest trends identified in the plot above is in the loudness variable.  For this reason, loudness was selected as the first variable to be analyzed.  The distribution of each decade's loudness score (in decibels) was also plotted to determine its suitability for parametric hypothesis tests.  Each decade's loudness distribution appeared approximately gaussian, and we proceeded with the parametric hypothesis tests since they are robust to moderate deviations from normality.
@@ -91,16 +103,6 @@ loud.test <- pairwise_t_test(decades, loudness ~ decade, paired = F,
 # Pairwise t-test matrix
 loud.test2 <- pairwise.t.test(decades$loudness, decades$decade,
                              p.adjust.method = "hochberg")
-
-# Boxplot with t-test results
-# loud.test <- loud.test %>% add_xy_position(x = "decade")
-# 
-# decades %>% mutate(decade = as.factor(decade)) %>% ggplot(aes(decade, loudness)) +
-#   geom_boxplot(aes(group = decade, fill = decade), outlier.colour = "red",
-#                outlier.shape = 2) + labs(title = "Boxplot of Loudness for Popular Songs of Each Decade\n1950-2020",
-#                                          x = "Decade", y = "Loudness Score") +
-#   scale_fill_viridis(discrete = T, option = "magma") +
-#   stat_pvalue_manual(loud.test, step.increase = .05) + theme(text = element_text(size = 14))
 
 # Heat map of p-values
 # Heatmap with t-test results
