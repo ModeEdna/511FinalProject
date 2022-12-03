@@ -58,8 +58,8 @@ decades %>% mutate(decade = as.factor(decade)) %>%
 decades %>% mutate(decade = as.factor(decade)) %>% ggplot(aes(decade, loudness)) +
   geom_violin(aes(group = decade, fill = decade)) +
   geom_boxplot(aes(group = decade, fill = decade), outlier.colour = "red",
-               outlier.shape = 2, width=0.1) + labs(title = "Boxplot of Loudness for Popular Songs of Each Decade\n1950-2020",
-                                         x = "Decade", y = "Loudness Score") +
+               outlier.shape = 2, width=0.1) + labs(title = "Violin Plot of Loudness for Popular Songs of Each Decade\n1950-2020",
+                                         x = "Decade", y = "Loudness Score (dB)") +
   scale_fill_viridis(discrete = T, option = "magma") + theme(text = element_text(size = 14))
 
 ```
