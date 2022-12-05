@@ -99,6 +99,15 @@ The question:
 
 ### EDA
 
+```{r}
+# creating variable for file paths
+edyPath <- './GitHub/edyPlaylist.csv'
+usPath <- './GitHub/filtered_usa_top50.csv'
+mexPath <- './Github/mex50.csv'
+ukPath <- './GitHub/filtered_uk_top50.csv'
+decadesPath <- "./GitHub/spotify_decades.csv"
+```
+
 ```{r, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(tidyverse)
@@ -110,9 +119,9 @@ library(grid)
 
 # Load data
 # Top 50 USA
-usa <- read.csv('./GitHub/filtered_usa_top50.csv')
+usa <- read.csv(usPath)
 # Top 50 UK
-uk <- read.csv('./GitHub/filtered_uk_top50.csv')
+uk <- read.csv(ukPath)
 
 # adding "country" column to each df; will be used for EDA purposes
 usa$country <- "USA"
@@ -138,17 +147,44 @@ Comparison of Energy - somewhat significant difference in the mean of energy. UK
 Comparison of Valence - somewhat significant difference in the mean of valence. UK is higher at 0.5 and USA is lower at 0.4. Valence compares the musical positiveness of a song, higher value means more positive.
 
 ```{r}
-# Boxplot for danceability varible
-both %>%
+# Boxplots for variables of interest
+# Boxplot for danceability variable
+dance.box <- both %>%
   ggplot( aes(x = country, y = danceability, fill=country)) +
-  geom_boxplot() + labs(title = "Danceability of Top 50 Songs by Country",
-              caption = "Figure 1.1: Boxplot of Danceability by Country")+
-    scale_fill_manual(values = c("#6699cc", "#cd5c5c")) +
-  xlab("Country") + ylab("Danceability")+ 
-  theme(plot.title = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5))
+  geom_boxplot() + labs(title = "Danceability") +
+  scale_fill_manual(values = c("#6699cc", "#cd5c5c")) +
+  xlab("Country") + ylab("Danceability") + 
+  scale_y_continuous(breaks = c(0.25,0.50,0.75,1.00)) +
+  theme(plot.title = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5), legend.position="none")
+#dance.box
+# Boxplot for energy variable
+energy.box <- both %>%
+  ggplot( aes(x = country, y = energy, fill=country)) +
+  geom_boxplot() + labs(title = "Energy") +
+  scale_fill_manual(values = c("#6699cc", "#cd5c5c")) +
+  xlab("Country") + ylab("Energy") + 
+  theme(plot.title = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5), legend.position="none")
+#energy.box
+# Boxplot for valence variable
+valence.box <- both %>%
+  ggplot( aes(x = country, y = valence, fill=country)) +
+  geom_boxplot() + labs(title = "Valence") +
+  scale_fill_manual(values = c("#6699cc", "#cd5c5c")) +
+  xlab("Country") + ylab("Valence") +
+  theme(plot.title = element_text(hjust = 0.5), plot.caption = element_text(hjust = 0.5), legend.position="none")
+#valence.box
+# Display Boxplots for chosen variables 
+# Boxplots arranged in 1x3 grid
+grid.arrange(dance.box, energy.box, valence.box, ncol = 3, bottom=textGrob("Figure 1.1: Boxplots of Variables of Interest", gp = gpar(fontsize = 9)))
 ```
 
-In Figure 1.1, we can see there is not much difference at all between the countries. The median danceability is slightly higher for the USA than the UK. The interquartile range is also slightly larger for the USA than the UK.
+In Figure 1.1, we can visualize the five-number summary of each variable using boxplots. Each boxplot is grouped by country, with blue representing the UK and red representing the USA.
+
+The danceability boxplot (far-left) shows that there is not much difference at all between the countries. The median danceability is slightly higher for the USA (0.65) than the UK (0.64). The interquartile range is also slightly larger for the USA than the UK.
+
+The energy boxplot (middle) shows that there is a significant difference between the countries. The median energy is higher for the UK (0.62) than the USA (0.53). The interquartile range is also much larger for the UK than the USA.
+
+The valence boxplot (far-right) shows that there is some difference between the countries. The median valence is higher for the UK (0.43) than the USA (0.36). The interquartile range is also higher for the UK than the USA.
 
 ### Testing
 
@@ -278,7 +314,7 @@ library(tidyverse)
 library(viridis)
 
 # Read in data 
-decades <- read_csv("./GitHub/spotify_decades.csv") %>% rename(decade = tag)
+decades <- read_csv(decadesPath) %>% rename(decade = tag)
 
 # Pivot for suitable graphing with facets 
 songs_long <- decades %>% pivot_longer(cols = colnames(decades)[5:14], names_to = "Measure", values_to = "Score") %>% mutate(decade = as.factor(decade))
@@ -395,8 +431,8 @@ The other variable we'd like to compare would be the Danceability score. More of
 ```{r, warning=FALSE, message=FALSE}
 library(dplyr)
 # grab the Mexico and US Top 50 playlists
-mex <- read.csv('./Github/mex50.csv')
-us <- read.csv('./GitHub/filtered_usa_top50.csv')
+mex <- read.csv(mexPath)
+us <- read.csv(usPath)
 # add an identifier column to the us playlist
 us$Playlist <- 'US50'
 # put both data frames into one
@@ -473,7 +509,7 @@ library(gridExtra)
 library(grid)
 
 # load data
-edy <- read.csv('./GitHub/edyPlaylist.csv')
+edy <- read.csv(edyPath)
 
 # cleaning for EDA purposes
 # remove full date from track.album.release_date, keep only the year
