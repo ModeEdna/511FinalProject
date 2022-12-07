@@ -33,19 +33,19 @@ editor: visual
 
 ## Project intro
 
-Given that music has, is, and will continue to be one of the strongest influences in human culture/life, it has given way to plenty of debate. Debates such as which decade has the best music, what makes music good, etc. One of the reasons for such debate has been the evolution of sound, and how it has changed music. The problem with debate is that it\'s subjective. To remove subjectiveness from the topic, we want to answer certain questions using statistical methods. 
+Given that music has, is, and will continue to be one of the strongest influences in human culture/life, it has given way to plenty of debate. Debates such as which decade has the best music, what makes music good, etc. One of the reasons for such debate has been the evolution of sound, and how it has changed music. The problem with debate is that it's subjective. To remove subjectiveness from the topic, we want to answer certain questions using statistical methods. 
 
 After some brainstorming, we settled on 4 questions:
 
 1.  Do the variable scores between the variables x, y, and z for songs from the UK US top 50 charts vary, or are they on average the same?
 
-2.  Is the average duration of a song from the 70\'s higher than the average duration of a song from the 2010\'s?
+2.  Is the average duration of a song from the 70's higher than the average duration of a song from the 2010's?
 
 3.  Does the playlist label (i.e. MX or US) affect x, y, and z variables? In other words, are the variable values dependent on their label?
 
 4.  Is there a relationship between the variables values and their popularity scores? Linear regression would be a good model to find these relationships.
 
-The intention here is to compare the taste of two nations that speak the same language, find if songs have gotten shorter over the past 5 decades, understand if variables vary depending on the country\'s taste, and to find if variable values can affect the popularity score or if popularity is more of an abstract concept that can\'t be predicted based on the available variables.
+The intention here is to compare the taste of two nations that speak the same language, find if songs have gotten shorter over the past 5 decades, understand if variables vary depending on the country's taste, and to find if variable values can affect the popularity score or if popularity is more of an abstract concept that can't be predicted based on the available variables.
 
 # Data
 
@@ -95,7 +95,9 @@ Spotify's data is kept in perfect conditions. We looked for outliers, inconsiste
 
 ### Question
 
-The question:
+Do the characteristics of popular songs vary between countries that speak the same language?
+
+To answer this question, we will explore the top 50 most popular songs playlists between the United States and the United Kingdom. We wanted to see if there happens to be a difference in the most popular songs, even though they speak the same language and would be expected to listen to similar music and genres. Typically, the United Kingdom tends to have very upbeat songs, such as pop, dance, and EDM, topping the charts each week. On the other hand, the United States seems to favor other types of music, like rap, country, and soft-pop. For this analysis we will compare danceability, energy, and valence of the top 50 songs. We will use a two-sample t-test for each of the three variables.
 
 ### EDA
 
@@ -360,7 +362,7 @@ In Figure 1.8, we can see the distribution of the difference in mean valence bet
 
 ### Results
 
-We might need to consolidate the results given after each graph into one paragraph for this part and just reference thee tests and graphs from this paragraph. Might make it easier to understand.
+After conducting each test, we noted some important findings regarding the difference in top 50 songs for the UK and USA. We expected all three variables to be of higher value in for the UK songs than the US songs, but that was only true for energy and valence. There was no clear difference in the average danceability between the UK and the USA, thus we failed to reject the null hypothesis. For energy and valence, we found enough evidence to reject the null hypothesis, concluding that both of the variables were higher for the UK than the USA. UK top 50 songs, on average, have more energy (1.16 times greater) and are more positive (1.26 times greater) than songs of the USA top 50.
 
 ## Decade vs Decade
 
@@ -868,31 +870,31 @@ With the recent release of Spotify Wrapped 2022 and Apple Music Replay 2022, we 
 
 In question 1, the t-test revealed that there was no clear difference between danceability of the US and the UK, but there was a significant difference in the energy and valence; the UK had higher scores in both. This gave us enough evidence to believe that music preferences in the UK tend to gravitate towards happier songs.
 
-In question 2, the ANOVA and pairwise t-tests results showed that the variable of loudness has steadily increased decade over decade. We can attribute this to the evolution of music; using the Rock genre as an example -- music went from acoustic rock (Beatles) to stadium rock (AC/DC), to metal (Metallica). However, loudness hit a peak in the early 2000\'s and it has slowly been on a decline since then.
+In question 2, the ANOVA and pairwise t-tests results showed that the variable of loudness has steadily increased decade over decade. We can attribute this to the evolution of music; using the Rock genre as an example -- music went from acoustic rock (Beatles) to stadium rock (AC/DC), to metal (Metallica). However, loudness hit a peak in the early 2000's and it has slowly been on a decline since then.
 
-In question 3, the MANOVA test determined that both danceability and valence scores in Mexico\'s Top 50 songs playlist were meaningfully higher than those of the US. We had initially hypothesized this to be the case, given that Mexico is considered a warmer and expressive country.
+In question 3, the MANOVA test determined that both danceability and valence scores in Mexico's Top 50 songs playlist were meaningfully higher than those of the US. We had initially hypothesized this to be the case, given that Mexico is considered a warmer and expressive country.
 
-In question 4, we thought it might be possible to predict a song\'s popularity based on specific variable scores. Unfortunately, we came to the realization that there is no tangibility to this problem. Factors affecting song popularity likely are more abstract and difficult to pin down by scoring songs based on their tempo, key, etc.
+In question 4, we thought it might be possible to predict a song's popularity based on specific variable scores. Unfortunately, we came to the realization that there is no tangibility to this problem. Factors affecting song popularity likely are more abstract and difficult to pin down by scoring songs based on their tempo, key, etc.
 
 ## Possible improvements
 
-\- The most common improvement to any data science project is more data. Since we were using Top 50 playlists or playlists with less than 1000 songs, we might\'ve not captured the full distributions of scores among songs.
+\- The most common improvement to any data science project is more data. Since we were using Top 50 playlists or playlists with less than 1000 songs, we might've not captured the full distributions of scores among songs.
 
 \- We could have done our analysis with more variables and not just the continuous ones. Using variables such as Explicit, album type, and others.
 
-\- Maybe other streaming services have more variables that we could\'ve used to explore the differences between our entities.
+\- Maybe other streaming services have more variables that we could've used to explore the differences between our entities.
 
 ## Future analysis
 
-\- We would\'ve liked to study the variable scores and how they were affected by the climate and temperature of different countries. Perhaps colder countries listen to sadder music, while warmer countries have more upbeat songs, or vice versa.
+\- We would've liked to study the variable scores and how they were affected by the climate and temperature of different countries. Perhaps colder countries listen to sadder music, while warmer countries have more upbeat songs, or vice versa.
 
 \- We would also be interested in exploring music differences between countries that have been historically oppressed by their leaders, such as Cuba, Venezuela, North Korea, etc. It might be the case that oppressed countries have a limited range/access to music.
 
-\- We\'d be interested in researching if there is a link between certain variables and the song\'s likelihood of becoming viral. We think that songs that came out many years ago have a higher chance of becoming viral, so there might be something to find there.
+\- We'd be interested in researching if there is a link between certain variables and the song's likelihood of becoming viral. We think that songs that came out many years ago have a higher chance of becoming viral, so there might be something to find there.
 
 ## Use cases
 
-This type of research can be of great value to marketing teams. If you can single out countries or age group\'s preferences, you can increase the value of marketing campaigns. Furthermore, artists themselves can use the data to create music that\'s catered to their intended audience. Lastly, you can utilize the analyses to understand your personal interests. Your music might have scores different to what you expect!
+This type of research can be of great value to marketing teams. If you can single out countries or age group's preferences, you can increase the value of marketing campaigns. Furthermore, artists themselves can use the data to create music that's catered to their intended audience. Lastly, you can utilize the analyses to understand your personal interests. Your music might have scores different to what you expect!
 
 # Appendix
 
