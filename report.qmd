@@ -368,11 +368,11 @@ After conducting each test, we noted some important findings regarding the diffe
 
 ### Question
 
-Is music
+Has music become louder over time?
 
-Music can be considered a defining characteristic of a generation. The most popular songs of a decade often reflect the general culture, philosophy, and sentiment of that time. For this reason, our second question set out to examine how popular music has changed over time on a decade-by-decade basis. Specifically, we set out to see what variables have most drastically changed over time, and whether identifying these changes might be informative with respect to trends in culture popular culture. After some exploratory analysis, hypothesis testing was conducted on mean differences in track loudness over the decades using pairwise t-tests and ANOVA.
+Music can be considered a defining characteristic of a generation. The most popular songs of a decade often reflect the general culture, philosophy, and sentiment of that time. For this reason, our second question set out to examine how popular music has changed over time on a decade-by-decade basis. Specifically, we set out to see what variables have most drastically changed over time, and whether identifying these changes might be informative with respect to trends in popular culture. After some exploratory analysis, hypothesis testing was conducted on mean differences in track loudness over the decades using pairwise t-tests and analysis of variance (ANOVA).
 
-The first step in the process was to gather appropriate data to explore. Spotify maintains a playlist for each decade from 1950 to 2010 entitled "All out" followed by the decade. These playlists reflect the most popular songs from that decade in the United States. While Spotify is not transparent about their sampling method for the playlist, it is assumed that these playlists are based on the top charts from each decade. The current decade was also included for continuity, and in this case the spotify "top tracks" playlists were used for each year of the decade thus far (2020, 2021, 2022). All data were gathered from the Spotify API, using the SpotifyR package.
+The first step in the process was to gather appropriate data to explore. Spotify maintains a playlist for each decade from 1950 to 2010 entitled "All out" followed by the decade. These playlists reflect the most popular songs from that decade in the United States. While Spotify is not transparent about their sampling method for the playlist, it is assumed that these playlists are based on the top charts from each decade. The current decade was also included for continuity, and in this case the Spotify "top tracks" playlists were used for each year of the decade thus far (2020, 2021, 2022). All data were gathered from the Spotify API, using the SpotifyR package.
 
 The dataset was checked for missing values and duplicate song names. No missing values were detected and any duplicate songs were removed. Only non-categorical (continuous) track features were considered in the analysis since the planned hypothesis tests were only suitable for numerical data. Track identifiers were omitted. Popularity was dropped as a variable since all songs in the analysis were retrieved from top charts. After these steps were applied, the final dataset contained 9 features, one categorical decade label, and 1,329 songs (10 x 1329 matrix).
 
@@ -421,36 +421,52 @@ decades %>% mutate(decade = as.factor(decade)) %>% ggplot(aes(decade, loudness))
   theme(text = element_text(size = 14))
 ```
 
-Distributions and mean for each variable were visualized in a ggplot facet grid. Based on the EDA, one of the clearest trends identified in the plot above is in the loudness variable. For this reason, loudness was selected as the first variable to be analyzed. The distribution of each decade's loudness score (in decibels) was also plotted to determine its suitability for parametric hypothesis tests. Each decade's loudness distribution appeared approximately gaussian, and we proceeded with the parametric hypothesis tests since they are robust to moderate deviations from normality.
+The mean trends for each variable were visualized in a ggplot facet grid. Based on the EDA, one of the clearest trends identified in the first plot above is in the loudness variable. Loudness is also one of the most objective measures in the dataset since it is measured in decibels (dB). For these reasons, loudness was selected as the feature of interest. Next, the distribution of each decade's loudness score (in decibels) was also plotted to determine its suitability for parametric hypothesis tests. Each decade's loudness distribution appeared approximately gaussian, and we proceeded with the parametric hypothesis tests since they are robust to moderate deviations from normality.
 
 ### Testing
 
 **ANOVA**
 
-After EDA, we conducted an analysis of variance (ANOVA) test on the loudness scores of each decade. An ANOVA is a univariate test to determine whether a variable is different under the conditions of a categorical variable. This test will help us determine whether, in general, there is a difference in mean loudness among the decade groups, however it will not inform us specifically as to the directionality of the difference or which decades differ specifically. The null and alternative hypothesis are as follows:
+After EDA, we conducted an analysis of variance (ANOVA) test on the loudness scores of each decade. An ANOVA is an univariate test to determine whether a variable is different under the conditions of a categorical variable. This test will help us determine whether, in general, there is a difference in mean loudness among the decade groups, however it will not inform us specifically as to the directionality of the difference or which decades differ specifically. The null and alternative hypothesis are as follows:
 
-\$H_0: \\mu\_{1950} = \\mu\_{1960} = \\mu\_{1970} = \\mu\_{1980} = \\mu\_{1990} = \\mu\_{2000} = \\mu\_{2010} = \\mu\_{2020}\$, there is no difference in mean loudness scores among the decades.
+$$H_0: \mu_{1950} = \mu_{1960} = \mu_{1970} = \mu_{1980} = \mu_{1990} = \mu_{2000} = \mu_{2010} = \mu_{2020}$$ Or in other words, there is no difference in mean loudness scores among the decades.
 
-\$H_a:\$ The mean loudness scores are not equal.
+$H_a:$ The mean loudness scores are not equal.
 
 ```{r}
 # Anova for loudness
-summary(aov(loudness ~ decade, data = decades))
+summary(aov(loudness ~ as.factor(decade), data = decades))
 ```
 
-The results of our ANOVA test revealed F(1327) = 436.4, p \< 0.001. Based on the results of our ANOVA test, we determined that not all mean loudness values are the same for every decade.
+The results of our ANOVA test revealed
+
+$$
+F(7, 1321) = 76.8, p < 0.001
+$$
+
+Based on the results of our ANOVA test, we determined that not all mean loudness values are the same for every decade.
 
 **Pairwise t-tests**
 
 The next step in our analysis was to determine which decades had mean loudness scores that significantly differed from each other. To this effect, we decided to conduct pairwise t-tests on the loudness scores between each decade to determine which decades are different from one another. Since there are 8 decades available to us, the number of pairwise t-tests required was:
 
-\$C(8,2) = \\frac{8!}{2!(8-2)!} = 28\$
+$$
+C(8,2) = \frac{8!}{2!(8-2)!} = 28
+$$
 
 Since this is a large number of t-tests, we must adjust for multiple comparisons. The Benjamini and Hochberg adjustment method was used to adjust the p-value by controlling the False Discovery Rate (FDR), which is the expected proportion of false positives (Jafari & Ansari-Pour, 2018; Benjamini & Hochberg, 2000). This is a slightly less conservative method than the Bonferroni method, which simply multiplies the raw p-values by the number of tests. The null and alternative hypothesis of each pairwise t-test is as follows:
 
-\$H_0: \\mu_x = \\mu_y\$ There is no difference in mean loudness scores for some decade X and decade Y - the difference in means is zero. In other words, both decade X and decade Y have similar loudness scores for their tracks on average.
+$$
+H_0: \mu_x = \mu_y
+$$
 
-\$H_a: \\mu_x \\neq \\mu_y\$ The difference in mean loudness scores for some decade X and decade Y are not zero. In other words, decade X and decade Y have different loudness levels on their most popular tracks on average.
+In other words, there is no difference in mean loudness scores for some decade X and decade Y - the difference in means is zero. In other words, both decade X and decade Y have similar loudness scores for their tracks on average.
+
+$$
+H_a: \mu_x \neq \mu_y
+$$
+
+The difference in mean loudness scores for some decade X and decade Y are not zero. In other words, decade X and decade Y have different loudness levels on their most popular tracks on average.
 
 ```{r}
 library(ggpubr)
@@ -481,9 +497,9 @@ loud.matrix %>% ggplot(aes(Var1, Var2, fill = value)) +
 
 ### Results
 
-The results of our pairwise t-tests suggest that for many decades, there is a significant difference in loudness of popular songs. Specifically, from the years 1970-2000, there is a significant increase in loudness score for the most popular tracks. There is not as much of significant difference in loudness on the lower and upper range, however. For example, there is no significant difference in loudness from 1950 to 1960, 1960 to 1970, and 2010 to 2020. Notably, between 2000 and 2020, there is a significant difference in loudness for popular songs in the other direction - the loudness has decreased on average. Overall, this suggests a trend in popular music where songs have generally increased in volume on average from the period 1950-2000, and have begun to decrease in the period 2000-2020.
+The results of our pairwise t-tests suggest that for many decades, there is a significant difference in loudness of popular songs. Specifically, from the years 1970-2000, there is a significant increase in loudness score for the most popular tracks. However, there are not significant differences in loudness for consecutive decades on the lower and upper range. For example, there is no significant difference in loudness from 1950 to 1960, 1960 to 1970, and 2010 to 2020. Notably, between 2000 and 2020, there is a significant difference in loudness for popular songs in the other direction - the loudness has decreased on average. Overall, this suggests a trend in popular music where songs have generally increased in volume on average from the period 1950-2000, and have begun to decrease in the period 2000-2020.
 
-In conclusion, the loudness in decibels of popular music has changed significantly over the decades on average. We have seen a general increase in loudness for over 6 decades, until a recent decrease in loudness over the past 20 years. While the reasons for this trend may be difficult to determine, there are a few plausible hypotheses. Genre may have a large impact - but it is worth considering that the popularity of genres is not necessarily directly reflected in top charts. Rock, disco, and rap became in the last decades of the 1900s, then genres like punk rock, R&B, and alternative were popular in the 00's. It is surprising that in the 2010s and 2020s, a time where loud electronic music has become more popular, that we are starting to see a decrease in loudness. However, considering that top charts contain more pop music, and currently the most popular songs are from artists such as Taylor Swift, The Weeknd, Post Malone, and Lil Uzi Vert, it makes some intuitive sense that popular music has become quieter.
+In conclusion, the loudness in decibels of popular music has changed significantly over the decades on average. We have seen a general increase in loudness for over 6 decades, until a recent decrease in loudness over the past 20 years. While the reasons for this trend may be difficult to determine, there are a few plausible hypotheses. Genre may have a large impact - but it is also worth considering that the popularity of genres is not necessarily directly reflected in top charts. Rock, disco, and rap became in the last decades of the 1900s, then genres like punk rock, R&B, and alternative were popular in the 00's. It is surprising that in the 2010s and 2020s, a time where loud electronic music has become more popular, that we are starting to see a decrease in loudness. However, considering that top charts contain more pop music, and currently the most popular songs are from artists such as Taylor Swift, The Weeknd, Post Malone, and Lil Uzi Vert, it makes some intuitive sense that popular music has become quieter.
 
 ## Mexico vs US Top 50
 
@@ -793,7 +809,7 @@ fit3 <- lm(track.popularity~(danceability + loudness + speechiness + acousticnes
 summary(fit3)
 ```
 
-In our interaction model, the only significant single variable at the 95% confidence level was track duration. There were a few significant interaction terms, such as the interaction track duration:danceability, loudness:acousticness, acousticness:liveness, and instrumentalness:valence. For the final model, all terms that were not present in an interaction and the interaction terms that were not significant were dropped from the model. Due to the hierarchical principle in regression, any variables that are significant in an interaction must also be kept as a single variable term.
+In our interaction model, the only significant single variable at the 95% confidence level was track duration. There were a few significant interaction terms, such as the interaction track duration:danceability, loudness:acousticness, acousticness:liveness, and instrumentalness:valence. For the final model, all terms that were not present in a significant interaction and the interaction terms that were not significant themselves were dropped from the model. Due to the hierarchical principle in regression, any variables that are significant in an interaction must also be kept as a single variable term.
 
 ```{r}
 fit4 <- lm(track.popularity~(track.duration_ms + danceability + loudness + acousticness + valence + instrumentalness + track.duration_ms*danceability + loudness*acousticness + acousticness*liveness + instrumentalness*valence), data=train.data)
@@ -802,7 +818,7 @@ summary(fit4)
 
 After dropping the non-significant variables from the interaction model, only valence and the interactions duration:danceability and valence:instrumentalness were still significant.
 
-After model creation, the next step was to assess our model performance on the parameters of \$R\^2\$, \$RSE\$, and \$F\$.
+After model creation, the next step was to assess our model performance on the parameters of $R^2$ $RSE$, and $F$.
 
 ```{r}
 # Code adapted from Dr. Purna Gamage, Georgetown University
@@ -843,20 +859,22 @@ colnames(all)[c(3,4,5,6)]<-c("F stat","Adj R^2", "RSE","models")
 all[,c(3,4,5,6)]
 ```
 
-Given the performance measures, it is difficult to determine which model is the best. The F statistic, which tells us how significant our model is, is strongest for the second model, which is the one without interactions. However, the second model also has the lowest \$R\^2\$ value, which quantifies how well the response variable is predicted. The \$RSE\$ or Residual Standard Error is lowest on model 3, which also has the lowest F statistic. The \$RSE\$ is a measure of the residuals, or the distance from the predicted value. A lower \$RSE\$ indicates a closer fit. To complete the rest of the analysis, and to determine whether a linear model is suitable for this data at all, we will use model 4, which has a balance of all performance measures. Model 4 was our trimmed model that still included interactions.
+Given the performance measures, it is difficult to determine which model is the best. The F statistic, which tells us how significant our model is, is strongest for the second model, which is the one without interactions. However, the second model also has the lowest $R^2$ value, which quantifies how well the response variable is predicted. The $RSE$ or Residual Standard Error is lowest on model 3, which also has the lowest F statistic. The $RSE$ is a measure of the residuals, or the distance from the predicted value. A lower $RSE$ indicates a closer fit. To complete the rest of the analysis, and to determine whether a linear model is suitable for this data at all, we will use model 4, which has a balance of all performance measures. Model 4 was our trimmed model that still included interactions.
 
 ```{r}
 par(mfrow=c(2,2))
 plot(fit4)
 ```
 
-We used residual plots to determine whether this data science question was suitable for a linear model. The relationship between the fitted values and the residuals does show a V-pattern and does not look randomly distributed. The Q-Q plot of the residuals also suggests that the residuals are not very normally distributed. However, there are no high leverage points (defined in this case as being around or outside of Cook's distance), indicating that it is not the case that just a few outliers are heavily impacting the data. These observations, combined with the relatively low \$R\^2\$ value, would suggest that this question is not very well suited for a linear regression.
+We used residual plots to determine whether this data science question was suitable for a linear model. The relationship between the fitted values and the residuals does show a V-pattern and does not look randomly distributed. The Q-Q plot of the residuals also suggests that the residuals are not very normally distributed. However, there are no high leverage points - defined in this case as being around or outside of Cook's distance - indicating that it is not the case that just a few outliers are heavily impacting the data. These observations, combined with the relatively low $R^2$ value, would suggest that this question is not very well suited for a linear regression.
 
 ### Results
 
 Unfortunately, our data were not very well suited for a linear regression, nor was our model particularly interpretable. In our final chosen model, the main significant predictors were valence, the interaction between loudness and acousticness, and the interaction between valence and instrumentalness. Based on the coefficients and p-values, one might suggest that happier songs, with a combined effect of increased loudness and acousticness, and a decreased combined effect of valence and instrumentalness contribute to a song's popularity. After all, happy, loud and acoustic driven songs are descriptive of pop music. However, given the weak fit and predictive value overall, we are hesitant to conclude that this is the case. An abbreviated regression equation is depicted below:
 
-\$Popularity = 7.09X\_{valence} + 1.71X\_{loudness}X\_{acousticness} - 3.52X\_{valence}X\_{instrumentalness} + 50.98\$
+$$
+Popularity = 7.09X_{valence} + 1.71X_{loudness}X_{acousticness} - 3.52X_{valence}X_{instrumentalness} + 50.98
+$$
 
 Overall, this question is not well-suited to regression and further analysis is needed to determine more conclusively what variables contribute in predicting a song's popularity.
 
