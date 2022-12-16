@@ -1,4 +1,3 @@
 # 511FinalProject
-Repository for 511 final project
-Sample file
-edit test
+
+This repo contains the files required to render the final project for Probability Modeling and Statistical Computing (511) from grad school.
